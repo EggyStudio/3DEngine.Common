@@ -27,16 +27,15 @@ public sealed class DefaultPlugins : IPlugin
         Logger.Info("DefaultPlugins: Loading standard engine plugin set...");
 
         app.AddPlugin(new AssetPlugin())
+           .AddPlugin(new ScenesPlugin())
            .AddPlugin(new AppWindowPlugin())
            .AddPlugin(new AppExitPlugin())
            .AddPlugin(new ExceptionsPlugin())
            .AddPlugin(new TimePlugin())
            .AddPlugin(new InputPlugin())
            .AddPlugin(new EcsPlugin())
-           .AddPlugin(new BehaviorsPlugin
-           {
-               ScriptsDirectory = Path.Combine(AppContext.BaseDirectory, "source", "behaviors")
-           })
+           .AddPlugin(new BehaviorsPlugin())
+           .AddPlugin(new ScenesPlugin())
            .AddPlugin(new SdlImGuiPlugin())
            .AddPlugin(new SdlRendererPlugin())
            .AddPlugin(new VulkanWebViewPlugin())
