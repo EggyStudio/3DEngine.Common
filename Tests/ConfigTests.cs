@@ -6,7 +6,7 @@ namespace Engine.Tests.Common;
 [Trait("Category", "Unit")]
 public class ConfigTests
 {
-    // ── Config.Default ──────────────────────────────────────────────────
+    // -- Config.Default --
 
     [Fact]
     public void Default_Has_Expected_Values()
@@ -20,7 +20,7 @@ public class ConfigTests
         cfg.WindowCommand.Should().Be(WindowCommand.Show);
     }
 
-    // ── Config.GetDefault ───────────────────────────────────────────────
+    // -- Config.GetDefault --
 
     [Fact]
     public void GetDefault_Overrides_Parameters()
@@ -37,7 +37,7 @@ public class ConfigTests
         cfg.Graphics.Should().Be(GraphicsBackend.Sdl);
     }
 
-    // ── Fluent With* methods ────────────────────────────────────────────
+    // -- Fluent With* methods --
 
     [Fact]
     public void WithWindow_Returns_New_Instance_With_Updated_Window()
@@ -83,7 +83,7 @@ public class ConfigTests
         cfg.WindowData.Should().Be(data);
     }
 
-    // ── WindowData validation ───────────────────────────────────────────
+    // -- WindowData validation --
 
     [Fact]
     public void WindowData_Clamps_Negative_Dimensions_To_One()
@@ -114,7 +114,7 @@ public class ConfigTests
         data.Title.Should().Be("Hello World");
     }
 
-    // ── ToString ────────────────────────────────────────────────────────
+    // -- ToString --
 
     [Fact]
     public void Config_ToString_Contains_Key_Properties()
@@ -128,7 +128,7 @@ public class ConfigTests
         str.Should().Contain("Vulkan");
     }
 
-    // ── Record equality ─────────────────────────────────────────────────
+    // -- Record equality --
 
     [Fact]
     public void Config_Equality_Works_By_Value()

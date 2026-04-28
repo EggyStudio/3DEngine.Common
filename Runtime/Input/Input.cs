@@ -149,7 +149,7 @@ public sealed class Input
     /// <returns><c>true</c> if the button transitioned to up this frame; otherwise <c>false</c>.</returns>
     public bool MouseReleased(int button) => _mouseReleased.Contains((MouseButton)button);
 
-    // ── Mutation (internal - platform backends only) ───────────────────
+    // -- Mutation (internal - platform backends only) --
 
     /// <summary>Clears per-frame transient state. Called once at the end of each frame.</summary>
     internal void BeginFrame()
@@ -236,7 +236,7 @@ public sealed class Input
             _textInput.Add(c);
     }
 
-    // ── Diagnostics ────────────────────────────────────────────────────
+    // -- Diagnostics --
 
     /// <summary>Human-readable snapshot for debugging.</summary>
     public override string ToString() => 
