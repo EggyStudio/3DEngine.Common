@@ -28,6 +28,7 @@ public sealed class DefaultPlugins : IPlugin
 
         app.AddPlugin(new AssetPlugin())
            .AddPlugin(new ScenesPlugin())
+           .AddPlugin(new UsdScenesPlugin())
            .AddPlugin(new AppWindowPlugin())
            .AddPlugin(new AppExitPlugin())
            .AddPlugin(new ExceptionsPlugin())
@@ -35,7 +36,6 @@ public sealed class DefaultPlugins : IPlugin
            .AddPlugin(new InputPlugin())
            .AddPlugin(new EcsPlugin())
            .AddPlugin(new BehaviorsPlugin())
-           .AddPlugin(new ScenesPlugin())
            .AddPlugin(new SdlImGuiPlugin())
            .AddPlugin(new SdlRendererPlugin())
            .AddPlugin(new VulkanWebViewPlugin())
