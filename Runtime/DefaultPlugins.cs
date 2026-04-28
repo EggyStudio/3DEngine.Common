@@ -33,7 +33,10 @@ public sealed class DefaultPlugins : IPlugin
            .AddPlugin(new TimePlugin())
            .AddPlugin(new InputPlugin())
            .AddPlugin(new EcsPlugin())
-           .AddPlugin(new BehaviorsPlugin())
+           .AddPlugin(new BehaviorsPlugin
+           {
+               ScriptsDirectory = Path.Combine(AppContext.BaseDirectory, "source", "behaviors")
+           })
            .AddPlugin(new SdlImGuiPlugin())
            .AddPlugin(new SdlRendererPlugin())
            .AddPlugin(new VulkanWebViewPlugin())

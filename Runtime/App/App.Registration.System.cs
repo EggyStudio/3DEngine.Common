@@ -57,4 +57,18 @@ public sealed partial class App
         Logger.Trace($"System descriptor registered to stage {stage}: {descriptor.Name}");
         return this;
     }
+
+    /// <summary>Removes every system tagged with the given <see cref="SystemDescriptor.Source"/> from every stage.</summary>
+    /// <param name="source">The provenance tag to match.</param>
+    /// <returns>The total number of systems removed.</returns>
+    /// <remarks>
+    /// Used by hot-reload pipelines (e.g. <c>RuntimeBehaviorCompiler</c>) to evict the previous
+    /// generation's systems before re-registering freshly compiled ones under the same tag.
+    /// </remarks>
+    public int RemoveSystemsBySource(string source)
+    {
+        var n = Schedule.RemoveSystemsBySource(source);
+        if (n > 0) Logger.Trace($"Removed {n} system(s) tagged source='{source}'.");
+        return n;
+    }
 }

@@ -40,6 +40,13 @@ public sealed class SystemDescriptor
     /// <summary>Thread affinity for this system. Defaults to <see cref="ThreadAffinity.Any"/>.</summary>
     public ThreadAffinity Affinity { get; private set; } = ThreadAffinity.Any;
 
+    /// <summary>
+    /// Optional provenance tag identifying the source of this descriptor (e.g. <c>"Static"</c>,
+    /// <c>"Dynamic"</c>, or a custom hot-reload bucket name). Used by
+    /// <c>App.RemoveSystemsBySource</c> to bulk-remove a generation of systems on hot-reload.
+    /// </summary>
+    public string? Source { get; set; }
+
     /// <summary>Resource types this system declares as read-only dependencies.</summary>
     public IReadOnlyCollection<Type> Reads => _reads;
 
