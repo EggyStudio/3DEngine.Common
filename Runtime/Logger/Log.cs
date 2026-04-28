@@ -56,7 +56,7 @@ public static class Log
         logger.Info($"Process ID:   {Environment.ProcessId}");
         logger.Info($"Timestamp:    {DateTime.UtcNow:O}");
         logger.Info($"Console log:  {LogConfig.ConsoleMinimumLevel}+");
-        logger.Info($"File log:     {LogConfig.MinimumLevel}+ → {Path.Combine(AppContext.BaseDirectory, "Engine.log")}");
+        logger.Info($"File log:     {LogConfig.MinimumLevel}+ → {LogConfig.GetLogFilePath("Engine.log")}");
         logger.Info($"File cap:     {LogConfig.MaxLogFileBytes / (1024 * 1024)} MB");
         logger.Info($"Frame logs:   {(LogConfig.PerFrameLogging ? "ENABLED" : "DISABLED (set ENGINE_LOG_FRAMES=1 to enable)")}");
         logger.Info("========================================================");

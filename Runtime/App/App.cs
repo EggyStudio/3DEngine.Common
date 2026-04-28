@@ -73,7 +73,7 @@ public sealed partial class App : IDisposable
     public App(Config? config = null)
     {
         // Initialize file logger early so all subsequent logs are captured to disk.
-        var logPath = Path.Combine(AppContext.BaseDirectory, "Engine.log");
+        var logPath = LogConfig.GetLogFilePath("Engine.log");
         FileLoggerProvider.Initialize(logPath);
 
         Log.PrintStartupBanner();

@@ -24,4 +24,22 @@ public static class LogConfig
 
     /// <summary>Engine-wide stopwatch started at process launch for elapsed timestamps.</summary>
     internal static readonly Stopwatch EngineTimer = Stopwatch.StartNew();
+
+    /// <summary>
+    /// Directory where engine log files (Engine.log, Crash.log, ultralight.log, ...) are written.
+    /// Defaults to a <c>logs/</c> subfolder next to the executable. The directory is created
+    /// on first access so callers can pass the returned path straight to a file writer.
+    /// </summary>
+    public static string LogsDirectory
+    {
+        get
+        {
+            var dir = Path.Combine(AppContext.BaseDirectory, "logs");
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+    }
+
+    /// <summary>Convenience: returns <see cref="LogsDirectory"/>/<paramref name="fileName"/>, ensuring the directory exists.</summary>
+    public static string GetLogFilePath(string fileName) => Path.Combine(LogsDirectory, fileName);
 }

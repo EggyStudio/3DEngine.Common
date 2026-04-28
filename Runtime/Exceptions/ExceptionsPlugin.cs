@@ -85,7 +85,7 @@ public sealed class ExceptionsPlugin : IPlugin
     {
         try
         {
-            var path = Path.Combine(AppContext.BaseDirectory, "Crash.log");
+            var path = LogConfig.GetLogFilePath("Crash.log");
             var sb = new StringBuilder();
 
             sb.AppendLine("========================================================");
