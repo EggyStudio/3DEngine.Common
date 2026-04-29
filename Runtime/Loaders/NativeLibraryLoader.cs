@@ -157,6 +157,53 @@ public sealed class NativeLibraryLoader
     }
 
     /// <summary>
+    /// Same as <see cref="Preload(string)"/> but loads the first matching file with
+    /// <c>RTLD_GLOBAL</c> on Linux/macOS so its exported symbols are visible to
+    /// subsequently loaded libraries (required when later libs depend on this one,
+    /// e.g. <c>libWebCore.so</c> depends on symbols in <c>libUltralightCore.so</c>).
+    /// On Windows this is identical to <see cref="Preload(string)"/> since the
+    /// PE loader does not have a per-handle visibility flag.
+    /// </summary>
+    public nint PreloadGlobal(string fileName)
+    {
+        if (_loaded.TryGetValue(fileName, out nint cached))
+            return cached;
+
+        foreach (string dir in _searchPaths)
+        {
+            string fullPath = Path.Combine(dir, fileName);
+            if (!File.Exists(fullPath)) continue;
+
+            nint handle = TryLoadGlobal(fullPath);
+            if (handle != nint.Zero)
+            {
+                _loaded[fileName] = handle;
+                _onLog?.Invoke($"Loaded native library (GLOBAL): {fullPath} (0x{handle:X})");
+                return handle;
+            }
+
+            _onWarn?.Invoke($"Found but failed to load (GLOBAL): {fullPath}");
+        }
+
+        _onWarn?.Invoke($"Native library not found in any search path: {fileName}");
+        return nint.Zero;
+    }
+
+    /// <summary>
+    /// Pre-loads multiple libraries with <c>RTLD_GLOBAL</c> in the given (dependency-first) order.
+    /// </summary>
+    public int PreloadAllGlobal(params string[] fileNames)
+    {
+        int count = 0;
+        foreach (string name in fileNames)
+        {
+            if (PreloadGlobal(name) != nint.Zero)
+                count++;
+        }
+        return count;
+    }
+
+    /// <summary>
     /// Loads a native library from an explicit absolute path.
     /// Returns the handle or <see cref="nint.Zero"/> on failure.
     /// </summary>
@@ -357,6 +404,49 @@ public sealed class NativeLibraryLoader
     }
 
     // -- Static helpers --
+
+    // RTLD_LAZY = 1, RTLD_GLOBAL = 0x100 on glibc / musl / macOS.
+    private const int RTLD_LAZY = 1;
+    private const int RTLD_GLOBAL = 0x100;
+
+    [System.Runtime.InteropServices.DllImport("libdl.so.2", EntryPoint = "dlopen")]
+    private static extern nint dlopen_glibc(string filename, int flags);
+
+    [System.Runtime.InteropServices.DllImport("libdl.so", EntryPoint = "dlopen")]
+    private static extern nint dlopen_musl(string filename, int flags);
+
+    [System.Runtime.InteropServices.DllImport("libSystem.dylib", EntryPoint = "dlopen")]
+    private static extern nint dlopen_macos(string filename, int flags);
+
+    /// <summary>
+    /// Loads <paramref name="absolutePath"/> with global symbol visibility
+    /// (so subsequently loaded shared objects can resolve symbols against it).
+    /// On Windows this falls back to <see cref="NativeLibrary.TryLoad(string, out nint)"/>.
+    /// </summary>
+    private static nint TryLoadGlobal(string absolutePath)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            return NativeLibrary.TryLoad(absolutePath, out nint h) ? h : nint.Zero;
+        }
+
+        if (OperatingSystem.IsMacOS())
+        {
+            try { return dlopen_macos(absolutePath, RTLD_LAZY | RTLD_GLOBAL); }
+            catch { return nint.Zero; }
+        }
+
+        // Linux: try glibc soname first, fall back to musl.
+        try
+        {
+            nint h = dlopen_glibc(absolutePath, RTLD_LAZY | RTLD_GLOBAL);
+            if (h != nint.Zero) return h;
+        }
+        catch { /* libdl.so.2 not present (musl) */ }
+
+        try { return dlopen_musl(absolutePath, RTLD_LAZY | RTLD_GLOBAL); }
+        catch { return nint.Zero; }
+    }
 
     /// <summary>
     /// Converts a logical library name (e.g. <c>"AppCore"</c>) to its platform-specific
