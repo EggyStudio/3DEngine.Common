@@ -45,8 +45,8 @@ public sealed class DefaultPlugins : IPluginGroup, IPlugin
         new ExceptionsPlugin(),
         new AppWindowPlugin(),
         new AppExitPlugin(),
-        new SdlPlugin(),
         new SdlImGuiPlugin(),
+        new SdlPlugin(),
         new AssetPlugin(),
         new ScenesPlugin(),
         new PipelinesPlugin(),
@@ -70,15 +70,7 @@ public sealed class DefaultPlugins : IPluginGroup, IPlugin
     public void Build(App app)
     {
         Logger.Info("DefaultPlugins: Loading standard engine plugin set...");
-
         app.AddPlugins(this);
-
-        app.AddSystem(Stage.First, new SystemDescriptor(world =>
-            {
-                world.Resource<EcsWorld>().BeginFrame();
-            }, "DefaultPlugins.EcsBeginFrame")
-            .Write<EcsWorld>());
-
         Logger.Info("DefaultPlugins: All standard plugins loaded successfully.");
     }
 }
