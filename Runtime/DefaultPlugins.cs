@@ -1,55 +1,77 @@
 namespace Engine;
 
 /// <summary>
-/// Aggregates the standard set of engine plugins: window, input, ECS, behaviors, ImGui, renderer, and WebView.
+/// Standard set of engine plugins as a sortable <see cref="IPluginGroup"/>: window,
+/// input, ECS, behaviors, ImGui, renderer, WebView, etc.
 /// </summary>
 /// <remarks>
+/// <para>
+/// Plugins listed here are sorted by <see cref="IPlugin.Order"/> before being added to
+/// the <see cref="App"/>. Foundational plugins (e.g. <c>AssetPlugin</c> at
+/// <see cref="PluginOrder.Foundation"/>) automatically build first regardless of where
+/// they appear in the list - so consumer plugins (textures, materials, scenes, models, ...)
+/// don't need to declare an explicit dependency on them.
+/// </para>
+/// <para>
 /// Also registers a <see cref="Stage.First"/> system that calls <see cref="EcsWorld.BeginFrame"/>
-/// to advance the frame tick and clear per-frame change tracking.
+/// to advance the frame tick and clear per-frame change tracking. This post-group hook lives
+/// in <see cref="Build"/>, which is invoked automatically when this type is added via
+/// <see cref="App.AddPlugin"/> (the legacy entry point).
+/// </para>
 /// </remarks>
 /// <example>
 /// <code>
 /// var app = new App(Config.GetDefault(title: "My Game", width: 1280, height: 720));
-/// app.AddPlugin(new DefaultPlugins());        // window, input, ECS, renderer, ...
-/// app.AddSystem(Stage.Update, MyGameSystem);  // add your own systems
+/// app.AddPlugins(new DefaultPlugins());     // recommended - sorts by IPlugin.Order
+/// app.AddSystem(Stage.Update, MyGameSystem);
 /// app.Run();
 /// </code>
 /// </example>
 /// <seealso cref="App"/>
 /// <seealso cref="IPlugin"/>
-public sealed class DefaultPlugins : IPlugin
+/// <seealso cref="IPluginGroup"/>
+public sealed class DefaultPlugins : IPluginGroup, IPlugin
 {
     private static readonly ILogger Logger = Log.Category("Engine.Plugins");
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Listed in source-readable order. <see cref="App.AddPlugins(IPluginGroup)"/> sorts
+    /// by <see cref="IPlugin.Order"/> (stable sort), so foundational plugins automatically
+    /// move to the front.
+    /// </remarks>
+    public IEnumerable<IPlugin> GetPlugins() =>
+    [
+        new ExceptionsPlugin(),
+        new AppWindowPlugin(),
+        new AppExitPlugin(),
+        new SdlPlugin(),
+        new SdlImGuiPlugin(),
+        new AssetPlugin(),
+        new ScenesPlugin(),
+        new PipelinesPlugin(),
+        new MaterialPlugin(),
+        new ModelsPlugin(),
+        new TexturesPlugin(),
+        new TimePlugin(),
+        new InputPlugin(),
+        new EcsPlugin(),
+        new PhysicsPlugin(),
+        new WebViewPlugin(),
+    ];
+
+    /// <summary>
+    /// Registers every plugin returned by <see cref="GetPlugins"/> with <paramref name="app"/>,
+    /// sorted by <see cref="IPlugin.Order"/> so foundational plugins build first, and then
+    /// schedules a <see cref="Stage.First"/> system that calls <see cref="EcsWorld.BeginFrame"/>
+    /// at the start of every frame to advance the tick and clear per-frame change tracking.
+    /// </summary>
+    /// <param name="app">The application to register the plugins and frame-tick system with.</param>
     public void Build(App app)
     {
         Logger.Info("DefaultPlugins: Loading standard engine plugin set...");
 
-        app.AddPlugin(new AssetPlugin())
-           .AddPlugin(new TexturesPlugin())
-           .AddPlugin(new MaterialPlugin())
-           .AddPlugin(new ScenesPlugin())
-           .AddPlugin(new ModelsPlugin())
-           .AddPlugin(new AppWindowPlugin())
-           .AddPlugin(new AppExitPlugin())
-           .AddPlugin(new ExceptionsPlugin())
-           .AddPlugin(new TimePlugin())
-           .AddPlugin(new InputPlugin())
-           .AddPlugin(new EcsPlugin())
-           .AddPlugin(new BehaviorsPlugin())
-           .AddPlugin(new PhysicsPlugin())
-           .AddPlugin(new SdlImGuiPlugin())
-           .AddPlugin(new SdlRendererPlugin())
-           .AddPlugin(new VulkanWebViewPlugin())
-           .AddPlugin(new VulkanImGuiPlugin());
-
-        // Register the GLSL shader loader with the asset server
-        if (app.World.TryGetResource<AssetServer>(out var server))
-        {
-            server.RegisterLoader(new GlslLoader());
-            Logger.Debug("DefaultPlugins: GlslLoader registered with AssetServer.");
-        }
+        app.AddPlugins(this);
 
         app.AddSystem(Stage.First, new SystemDescriptor(world =>
             {
