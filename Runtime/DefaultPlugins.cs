@@ -29,6 +29,7 @@ public sealed class DefaultPlugins : IPlugin
         app.AddPlugin(new AssetPlugin())
            .AddPlugin(new MaterialPlugin())
            .AddPlugin(new ScenesPlugin())
+           .AddPlugin(new ModelsPlugin())
            .AddPlugin(new AppWindowPlugin())
            .AddPlugin(new AppExitPlugin())
            .AddPlugin(new ExceptionsPlugin())
