@@ -27,9 +27,8 @@ public sealed class DefaultPlugins : IPlugin
         Logger.Info("DefaultPlugins: Loading standard engine plugin set...");
 
         app.AddPlugin(new AssetPlugin())
+           .AddPlugin(new MaterialPlugin())
            .AddPlugin(new ScenesPlugin())
-           .AddPlugin(new MaterialXPlugin())
-           .AddPlugin(new UsdScenesPlugin())
            .AddPlugin(new AppWindowPlugin())
            .AddPlugin(new AppExitPlugin())
            .AddPlugin(new ExceptionsPlugin())
