@@ -37,7 +37,7 @@ public sealed class DefaultPlugins : IPlugin
            .AddPlugin(new InputPlugin())
            .AddPlugin(new EcsPlugin())
            .AddPlugin(new BehaviorsPlugin())
-           .AddPlugin(new Engine.Physics.Bepu.BepuPhysicsPlugin())
+           .AddPlugin(new PhysicsPlugin())
            .AddPlugin(new SdlImGuiPlugin())
            .AddPlugin(new SdlRendererPlugin())
            .AddPlugin(new VulkanWebViewPlugin())
