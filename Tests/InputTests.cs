@@ -11,8 +11,6 @@ namespace Engine.Tests.Common;
 [Trait("Category", "Unit")]
 public class InputTests
 {
-    // -- Keyboard --
-
     [Fact]
     public void SetKey_Down_Fires_KeyDown_And_KeyPressed()
     {
@@ -69,8 +67,6 @@ public class InputTests
         input.AnyKeyPressed().Should().BeTrue();
     }
 
-    // -- Mouse buttons --
-
     [Fact]
     public void SetMouseButton_Down_And_Up()
     {
@@ -112,8 +108,6 @@ public class InputTests
         input.AnyMousePressed().Should().BeTrue();
     }
 
-    // -- Mouse position & delta --
-
     [Fact]
     public void SetMousePosition_Updates_MouseXY()
     {
@@ -139,8 +133,6 @@ public class InputTests
         input.MouseDelta.Should().Be((7, 7));
     }
 
-    // -- Scroll wheel --
-
     [Fact]
     public void AddWheel_Accumulates()
     {
@@ -153,8 +145,6 @@ public class InputTests
         input.WheelY.Should().BeApproximately(0.5f, 0.001f);
     }
 
-    // -- Text input --
-
     [Fact]
     public void AddText_Appends_Characters()
     {
@@ -165,8 +155,6 @@ public class InputTests
 
         input.TextInput.ToString().Should().Be("Hello");
     }
-
-    // -- BeginFrame clears transient state --
 
     [Fact]
     public void BeginFrame_Clears_Pressed_Released_Deltas_Wheel_Text()
@@ -196,8 +184,6 @@ public class InputTests
         input.KeyDown(Key.W).Should().BeTrue();
         input.MouseDown(MouseButton.Left).Should().BeTrue();
     }
-
-    // -- ToString --
 
     [Fact]
     public void ToString_Contains_Info()

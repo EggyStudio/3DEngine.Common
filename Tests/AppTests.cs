@@ -10,8 +10,6 @@ public class AppTests : IDisposable
 
     public void Dispose() => _app.Dispose();
 
-    // -- Plugin registration --
-
     [Fact]
     public void AddPlugin_Builds_And_Registers_Plugin()
     {
@@ -57,8 +55,6 @@ public class AppTests : IDisposable
         result.Should().BeSameAs(_app);
     }
 
-    // -- System registration --
-
     [Fact]
     public void AddSystem_Registers_To_Schedule()
     {
@@ -92,8 +88,6 @@ public class AppTests : IDisposable
         _app.Schedule.SystemCount(Stage.Update).Should().Be(1);
     }
 
-    // -- Resource helpers --
-
     [Fact]
     public void InsertResource_Fluent_And_Accessible_Via_World()
     {
@@ -121,8 +115,6 @@ public class AppTests : IDisposable
         list.Should().BeEmpty();
     }
 
-    // -- World is accessible --
-
     [Fact]
     public void World_Contains_Config_And_Diagnostics_By_Default()
     {
@@ -130,15 +122,11 @@ public class AppTests : IDisposable
         _app.World.ContainsResource<ScheduleDiagnostics>().Should().BeTrue();
     }
 
-    // -- FrameCount starts at 0 --
-
     [Fact]
     public void FrameCount_Starts_At_Zero()
     {
         _app.FrameCount.Should().Be(0UL);
     }
-
-    // -- Dispose is safe to call multiple times --
 
     [Fact]
     public void Dispose_Multiple_Times_Is_Safe()
@@ -151,8 +139,6 @@ public class AppTests : IDisposable
 
         act.Should().NotThrow();
     }
-
-    // -- Helpers --
 
     private sealed class TestPlugin : IPlugin
     {

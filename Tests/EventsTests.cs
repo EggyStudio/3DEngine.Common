@@ -6,8 +6,6 @@ namespace Engine.Tests.Common;
 [Trait("Category", "Unit")]
 public class EventsTests
 {
-    // -- Basic Send / Read --
-
     [Fact]
     public void Send_And_Read_RoundTrips()
     {
@@ -51,8 +49,6 @@ public class EventsTests
         events.Read().Should().Equal(10, 20, 30);
     }
 
-    // -- Drain --
-
     [Fact]
     public void Drain_Returns_Events_And_Clears_Buffer()
     {
@@ -75,8 +71,6 @@ public class EventsTests
         events.Drain().Should().BeEmpty();
     }
 
-    // -- Clear --
-
     [Fact]
     public void Clear_Removes_All_Events()
     {
@@ -89,8 +83,6 @@ public class EventsTests
         events.Count.Should().Be(0);
         events.IsEmpty.Should().BeTrue();
     }
-
-    // -- Count / IsEmpty --
 
     [Fact]
     public void Count_Reflects_Number_Of_Events()
@@ -142,8 +134,6 @@ public class EventsTests
         world.ReadEvents<int>().Should().BeEmpty();
     }
 
-    // -- Events.Get auto-creates queue --
-
     [Fact]
     public void Events_Get_AutoCreates_Queue_In_World()
     {
@@ -165,8 +155,6 @@ public class EventsTests
 
         a.Should().BeSameAs(b);
     }
-
-    // -- Thread-safety smoke test --
 
     [Fact]
     public void Concurrent_Sends_Do_Not_Lose_Events()

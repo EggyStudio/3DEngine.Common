@@ -6,8 +6,6 @@ namespace Engine.Tests.Common;
 [Trait("Category", "Unit")]
 public class LoggerTests
 {
-    // -- LoggerFactory ---------------------------------------------------
-
     [Fact]
     public void CreateLogger_Returns_Same_Instance_For_Same_Category()
     {
@@ -29,8 +27,6 @@ public class LoggerTests
 
         a.Should().NotBeSameAs(b);
     }
-
-    // -- Log static helpers ----------------------------------------------
 
     [Fact]
     public void Log_Category_Returns_Logger()
@@ -58,8 +54,6 @@ public class LoggerTests
         logger.Should().NotBeNull();
         logger.Should().BeAssignableTo<ILogger>();
     }
-
-    // -- Logger.UseProvider ----------------------------------------------
 
     [Fact]
     public void UseProvider_Dispatches_To_Custom_Provider()
@@ -123,8 +117,6 @@ public class LoggerTests
 
         spy.Messages.Should().ContainSingle();
     }
-
-    // -- Convenience methods route to correct level ----------------------
 
     [Fact]
     public void Trace_Routes_To_LogLevel_Trace()
@@ -198,8 +190,6 @@ public class LoggerTests
         spy.Messages.Should().ContainSingle(m => m.Level == LogLevel.Critical);
     }
 
-    // -- FrameTrace ------------------------------------------------------
-
     [Fact]
     public void FrameTrace_Suppressed_When_PerFrameLogging_Disabled()
     {
@@ -238,8 +228,6 @@ public class LoggerTests
         }
     }
 
-    // -- MinimumLevel filtering ------------------------------------------
-
     [Fact]
     public void ExtraProvider_Respects_MinimumLevel()
     {
@@ -260,16 +248,12 @@ public class LoggerTests
         }
     }
 
-    // -- LogConfig defaults ----------------------------------------------
-
     [Fact]
     public void LogConfig_Defaults()
     {
         // These just verify the static defaults haven't been accidentally changed
         LogConfig.MaxLogFileBytes.Should().Be(50L * 1024 * 1024);
     }
-
-    // -- Helpers ----------------------------------------------------------
 
     private static (Logger Logger, SpyLoggerProvider Spy) CreateLoggerWithSpy()
     {

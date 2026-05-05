@@ -10,8 +10,6 @@ public class WorldTests : IDisposable
 
     public void Dispose() => _world.Dispose();
 
-    // -- InsertResource / Resource<T> ------------------------------------
-
     [Fact]
     public void InsertResource_And_Resource_RoundTrips()
     {
@@ -38,8 +36,6 @@ public class WorldTests : IDisposable
         _world.Resource<string>().Should().Be("second");
     }
 
-    // -- TryGetResource --------------------------------------------------
-
     [Fact]
     public void TryGetResource_Returns_True_When_Present()
     {
@@ -55,8 +51,6 @@ public class WorldTests : IDisposable
         _world.TryGetResource<double>(out _).Should().BeFalse();
     }
 
-    // -- TryResource<T> -------------------------------------------------
-
     [Fact]
     public void TryResource_Returns_Value_When_Present()
     {
@@ -71,8 +65,6 @@ public class WorldTests : IDisposable
         _world.TryResource<string>().Should().BeNull();
     }
 
-    // -- ContainsResource ------------------------------------------------
-
     [Fact]
     public void ContainsResource_Returns_True_When_Present()
     {
@@ -86,8 +78,6 @@ public class WorldTests : IDisposable
     {
         _world.ContainsResource<float>().Should().BeFalse();
     }
-
-    // -- GetOrInsertResource ---------------------------------------------
 
     [Fact]
     public void GetOrInsertResource_Inserts_When_Missing()
@@ -123,8 +113,6 @@ public class WorldTests : IDisposable
         callCount.Should().Be(1);
     }
 
-    // -- InitResource<T> -------------------------------------------------
-
     [Fact]
     public void InitResource_Creates_Default_When_Missing()
     {
@@ -145,8 +133,6 @@ public class WorldTests : IDisposable
         result.Should().BeSameAs(existing);
     }
 
-    // -- RemoveResource --------------------------------------------------
-
     [Fact]
     public void RemoveResource_Returns_True_When_Present()
     {
@@ -161,8 +147,6 @@ public class WorldTests : IDisposable
     {
         _world.RemoveResource<int>().Should().BeFalse();
     }
-
-    // -- ResourceCount / ResourceTypes -----------------------------------
 
     [Fact]
     public void ResourceCount_Reflects_Insertions_And_Removals()
@@ -188,8 +172,6 @@ public class WorldTests : IDisposable
         types.Should().Contain(typeof(string));
         types.Should().Contain(typeof(double));
     }
-
-    // -- Dispose / Clear -------------------------------------------------
 
     [Fact]
     public void Clear_Disposes_IDisposable_Resources()
@@ -228,8 +210,6 @@ public class WorldTests : IDisposable
         disposable.DisposeCount.Should().Be(1);
     }
 
-    // -- Thread safety smoke test ----------------------------------------
-
     [Fact]
     public void Concurrent_InsertResource_Does_Not_Corrupt_State()
     {
@@ -241,8 +221,6 @@ public class WorldTests : IDisposable
             w.Dispose();
         });
     }
-
-    // -- Helpers ---------------------------------------------------------
 
     private sealed class TrackingDisposable : IDisposable
     {
