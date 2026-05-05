@@ -12,17 +12,11 @@ namespace Engine;
 /// they appear in the list - so consumer plugins (textures, materials, scenes, models, ...)
 /// don't need to declare an explicit dependency on them.
 /// </para>
-/// <para>
-/// Also registers a <see cref="Stage.First"/> system that calls <see cref="EcsWorld.BeginFrame"/>
-/// to advance the frame tick and clear per-frame change tracking. This post-group hook lives
-/// in <see cref="Build"/>, which is invoked automatically when this type is added via
-/// <see cref="App.AddPlugin"/> (the legacy entry point).
-/// </para>
 /// </remarks>
 /// <example>
 /// <code>
 /// var app = new App(Config.GetDefault(title: "My Game", width: 1280, height: 720));
-/// app.AddPlugins(new DefaultPlugins());     // recommended - sorts by IPlugin.Order
+/// app.AddPlugins(new DefaultPlugins());
 /// app.AddSystem(Stage.Update, MyGameSystem);
 /// app.Run();
 /// </code>
